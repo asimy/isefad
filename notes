@@ -1,0 +1,39 @@
++ The random map creator is done
++ The map random populator is unstarted (creatures and objects altogether)
++ Monsters are partially done
++ Collision checker is unstarted
++ Attack is unstarted
++ Inventory is unstarted
+
+
+1. collision checker
+It should go into the Character class.
+Two parts: 
+ -check for vision (are you in my field of vision?)
+ -check for collision (are you standing by me?)
+
+2. Monsters
+Rename them to Creatures
+Move the attribute parts to Character class (so Player gets them too)
+Build the IA framework
+ - every character needs an update() method called every turn
+ - which IA to load has to be determined at creation time, to reduce processing load
+ - every IA is a subclass of a GenericIA class
+ - I don't like this, rethink
+
+3. Attacking
+Choose a simple battle system, implement the required methods in the Character class
+
+4. Objects
+Must create an Object class
+Load data from info file (as for Creatures) (syntax to define)
+
+5. Populators
+It has to work tightly with Map to implement themes
+Each Creature and Object can have percentages of chances of being in a room or in a walkway
+
+6. Inventory
+Every character can have an inventory
+Size of inventory (as in: number of objects) is unlimited
+Capacity is limited though: each Object has an attribute (weight, volume?), there is a limit to the sum of these attributes
+You can put something on the invenotry, remove it, use it, wear/yield it, take it off
