@@ -1,4 +1,5 @@
-# This classs is mainly used to test other objects
+#!/usr/bin/ruby
+# This class is mainly used to test other objects
 
 require "map.rb"
 #require "matriz"
@@ -10,7 +11,7 @@ require "monster"
 
 w=80
 h=25
-log=Logger.new("logs/mapper_error_"+Time.now.strftime("%Y%m%d_%H%M")+".log")
+log=Logger.new("logs/isefad_error_"+Time.now.strftime("%Y%m%d_%H%M")+".log")
 log.info "Beginning:"
 mapa = Map.new(w, h,log)
 stx,sty = mapa.create(60)
@@ -23,7 +24,7 @@ monsterList = MonsterList.new("monsters.info", log)
 
 monsters = Array.new
 x,y=mapa.find_empty
-monsters << Monster.new(x,y,mapa,'Goblin',monsterList.data, log)
+monsters << Monster.new(y,x, mapa,'Goblin',monsterList.data, log)
 
 client.update(player, monsters, mapa)
 k=client.readkey

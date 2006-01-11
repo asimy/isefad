@@ -55,9 +55,9 @@ class CursesClient
          mx,my,char=monster.pos
          # Only write it to screen if the player can see it
          # This is not working well... actually it is working bad, I have to review it.
-         if player.fov[my-fov_x,my-fov_y]!=Map::Trans && player.fov[my-fov_x,my-fov_y]!=nil
-            @win.color_set(COLOR_GREEN)
+         if player.sees?(my,mx)
             @win.setpos(mx,my)
+            @win.color_set(COLOR_GREEN)
             @win.addstr char
          end
       end
@@ -68,6 +68,7 @@ class CursesClient
       @win.color_set(COLOR_YELLOW)
       @win.addstr char
       @win.attroff(A_BOLD)
+
       @win.refresh
    end
    

@@ -83,6 +83,21 @@ class Character
       end
    end
 
+   def sees?(x,y)
+   
+      fov_x, fov_y=self.fovpos
+      rel_x = x-fov_x
+      rel_y = y-fov_y
+      
+      ret= self.fov[rel_x, rel_y] != nil
+      ret= ret && self.fov[rel_x, rel_y] != Map::Trans
+
+      if ret then
+         @log.info "#{x},#{y} seen from #{fov_x},#{fov_y} at #{rel_x},#{rel_y}, on #{fov[rel_x, rel_y]}"
+      end
+      return ret
+   end
+
    def oldpos
       return [@oldx, @oldy, @oldbg]
    end
