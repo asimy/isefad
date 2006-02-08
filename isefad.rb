@@ -30,10 +30,10 @@ client.update(player, monsters, mapa)
 k=client.readkey
 while(k!='q') do
    case k
-      when "8" then player.move(0, mapa)
-      when "6" then player.move(1, mapa)
-      when "5" then player.move(2, mapa)
-      when "4" then player.move(3, mapa)
+      when "8" then player.move(:up, mapa)
+      when "6" then player.move(:left, mapa)
+      when "5" then player.move(:down, mapa)
+      when "4" then player.move(:right, mapa)
    end
    client.update( player, monsters, mapa)
    k=client.readkey
