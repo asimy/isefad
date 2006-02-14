@@ -1,7 +1,8 @@
+require 'object'
 # Class from which inherit all characters in the game:
 #  the player, the monsters, and the NPCs
 
-class Character
+class Character < Object
    def initialize(x,y,map, log)
       @x=x
       @y=y
@@ -82,9 +83,9 @@ class Character
          i=i+1
       end
    end
-
-   def sees?(x,y)
    
+   # Checks whether I see the given coordinates or not
+   def sees?(x,y)
       fov_x, fov_y=self.fovpos
       rel_x = x-fov_x
       rel_y = y-fov_y
@@ -96,6 +97,14 @@ class Character
          @log.info "#{x},#{y} seen from #{fov_x},#{fov_y} at #{rel_x},#{rel_y}, on #{fov[rel_x, rel_y]}"
       end
       return ret
+   end
+
+   # Checks whether I am standing right by the coordinates or not
+   def isBy?(x,y)
+   ret= (x-@x).abs < 2
+   ret= ret && ((y-@y).abs < 2)
+
+   return ret
    end
 
    def oldpos

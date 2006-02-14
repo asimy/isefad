@@ -9,8 +9,8 @@
 1. collision checker
 It should go into the Character class.
 Two parts: 
- -check for vision (are you in my field of vision?)
- -check for collision (are you standing by me?)
+ -check for vision (are you in my field of vision?) (done)
+ -check for collision (are you standing by me?) (done)
 
 2. Monsters
 Rename them to Creatures

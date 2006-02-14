@@ -60,6 +60,9 @@ class CursesClient
             @win.color_set(COLOR_GREEN)
             @win.addstr char
          end
+         if player.isBy?(my,mx)
+            @log.info "You are standing by #{monster.name}"
+         end
       end
       
       x,y,char=player.pos
