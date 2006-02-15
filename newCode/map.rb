@@ -11,63 +11,12 @@ require 'tile'
 
 class Map
 
-  ##
-  # Class method that creates a random dungeon and returns it
-  #
-  def Map.create_random(w, h, max_rooms=100)
-    map = Map.new(w,h)
-
-    # Select a starting point
-    x = 1+random(w-2)
-    y = 1+random(h-2)
-    map.set_start(x, y)
-
-    dir = Map.random_dir
-    
-    # Add the initial room
-    room = Map.select_random_room(dir)
-    map.add_room(x, y, room)
-    
-    # Try to add another #max_rooms random rooms
-    max_rooms.times do
-      x, y, dir = map.select_wall
-      room = Map.select_random_room(dir)
-
-      if map.check_space(x, y, room)
-        map.add_room(x, y, room)
-      end
-      
-    end
-    
-    return map
-  end
-
-  ##
-  # Creates a random direction and returns it
-  #
-  def Map.random_dir
-    case random(4)
-      when 0 then return :up
-      when 1 then return :left
-      when 2 then return :down
-      when 3 then return :right
-    end
-  end
-
-  ##
-  # Selects a random type of room, creates it, and returns it
-  #
-  def Map.select_random_room(dir)
-  end
-
-  ##
-  # Here start the instance method declarations
-  ##
   
-  def initialize(width, height, seed=Nil)
+  def initialize(width, height, seed=nil)
     @height= height
     @width = width
     @tiles = Matriz.new(@width, @height, Tile.new(:Wall))
+    @register = Array.new # Register of map rooms
     
     # This is the way to have always the same dungeon: feed it
     # with the same seed number. Therefore, to save a dungeon you just need
@@ -77,5 +26,60 @@ class Map
     end
 
     @rooms = Array.new
+  end
+
+  def [](x,y)
+    return @tiles[x,y]
+  end
+
+  def set_start(x,y)
+    @start = [x,y]
+  end
+
+  def []=(x, y, type)
+    @tiles[x,y]=Tile.new(type)
+  end
+  
+  def add_room(x, y, room)
+    @tiles.ins_values(x, y, room)
+    @register << [x, y, room.w, room.h]
+  end
+
+  def select_wall
+    # Find a random room in the register
+    r = @register[rand(@register.length)]
+    # find a Floor spot
+    p r
+    x, y = r[0]+rand(r[2]), r[1]+rand(r[3])
+    puts "We found: #{x} #{y} (#{@tiles[x,y].type})"
+    while @tiles[x, y].type != :Floor do
+      x, y = r[0]+rand(r[2]), r[1]+rand(r[3])
+    end
+
+    # now find a wall
+    while @tiles[x, y].type != :Wall do
+      dir = MapGenerator.random_dir
+      case dir
+        when :up then y-= 1
+        when :left then x -= 1
+        when :down then y += 1
+        when :right then x += 1
+      end
+    end
+    
+    return x, y, dir
+  end
+
+  def to_s
+    @height.times do |j|
+      @width.times do |i|
+        case @tiles[i,j].type
+          when :Wall then print '#'
+          when :Floor then print '.'
+          else print '@'
+        end
+      end
+      print "\n"
+    end
   end
 end

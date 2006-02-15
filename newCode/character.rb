@@ -25,7 +25,7 @@ class Character
     @x = x
     @y = y
     @speed = speed
-    @ai = ("update"+ai).intern
+    @ai = ("update_"+ai.to_lower).intern
     self.attributes = attributes
   end
 

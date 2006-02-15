@@ -34,7 +34,7 @@ class Matriz
   end
 
   ##
-  # Gets the value in column x, line y
+  # Sets the value in column x, line y
   #
   def []=(x,y,value)
     if x>-1 && x<@w && y>-1 && y<@h
@@ -44,12 +44,12 @@ class Matriz
 
   ##
   # similar to []=, but adds all the values in Matriz vals
-  # but Map::Trans, which is considered 'transparency'
+  # but 'trans', which is considered 'transparency'
   #
-  def ins_values(x,y,vals)
+  def ins_values(x,y,vals, trans=nil)
     for j in 0..vals.h-1 do
       for i in 0..vals.w-1 do
-        if x+i>0 && x+i<@w && y+j>0 && y+j<@h && vals[i,j]!=Map::Trans
+        if x+i>0 && x+i<@w && y+j>0 && y+j<@h && !vals[i,j]===trans
           self[i+x,j+y]=vals[i,j]
         end
       end
