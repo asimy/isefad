@@ -10,7 +10,6 @@ require 'tile'
 =end
 
 class Map
-
   
   def initialize(width, height, filler)
     @height= height
@@ -75,6 +74,10 @@ class Map
           when :Wall then print '#'
           when :Floor then print '.'
           when :ClosedDoor then print '+'
+          when :Grass then print '.'
+          when :Hill then print ':'
+          when :Tree then print 'T'
+          when :Water then print '='
           else print '@'
         end
       end

@@ -122,4 +122,66 @@ class MapGenerator
     return map
   end
 
+  ##
+  # Fields generator, simply scattering random trees
+  # Later on, it will be able to add paths
+  # 
+  def MapGenerator.create_field(w, h, nb_trees=100, river=false)
+    map = Map.new(w, h, Tile.new(:Grass))
+
+    # Let's create an altitude chart
+    # FIXME
+    alts = Matriz.new(w, h, rand)
+    alt = rand
+    alts.w.times do |i|
+      alts.h.times do |j|
+        alts[i,j] = alt
+        map[i,j] = :Hill if alt>0.5
+        alt = rand #/10-0.05
+      end
+    end
+    
+    # Put on some random trees
+    nb_trees.times do
+      x, y = rand(w), rand(h)
+      map[x,y] = :Tree
+    end
+    
+    # Now, if we have a river, let's add it
+    if river
+      # Select a starting point
+      x, y = rand(w), rand(h)
+      finished = false
+      #while !finished do
+      100.times do
+        map[x,y] = :Water
+        x2, y2 = MapGenerator.min_height(x, y, alts)
+        if alts[x,y] > alts[x2,y2]
+          x = x2
+          y = y2
+        else
+          alts[x,y] +=0.1
+          map[x-1, y] = :Water if alts[x-1,y]
+          map[x, y-1] = :Water if alts[x,y-1]
+          map[x+1, y] = :Water if alts[x+1,y]
+          map[x, y+1] = :Water if alts[x,y+1]
+          x = x2
+          y = y2
+        end
+      end
+    end
+
+    return map
+  end
+
+  def MapGenerator.min_height(x, y, alts)
+    pos = Array.new
+    pos << [x-1, y, alts[x-1,y]] if alts[x-1,y]
+    pos << [x, y-1, alts[x,y-1]] if alts[x,y-1]
+    pos << [x+1, y, alts[x+1,y]] if alts[x+1,y]
+    pos << [x, y+1, alts[x,y+1]] if alts[x,y+1]
+    sel=pos.min { |a, b| a[2]<=>b[2] }
+    return sel[0], sel[1]
+  end
+
 end

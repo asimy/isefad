@@ -20,6 +20,7 @@ class Tile < Container
     :Stair_down => {:walkable => true},
     :Column     => {:walkable => false},
     :Grass      => {:walkable => true},
+    :Hill       => {:walkable => true},
     :Tree       => {:walkable => false},
     :Water      => {:walkable => false}
   }
