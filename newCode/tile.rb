@@ -15,9 +15,13 @@ class Tile < Container
     :Floor      => {:walkable => true},
     :Trap       => {:walkable => true},
     :Wall       => {:walkable => false},
+    :ClosedDoor => {:walkable => false},
     :Stair_up   => {:walkable => true},
     :Stair_down => {:walkable => true},
-    :Column     => {:walkable => false}
+    :Column     => {:walkable => false},
+    :Grass      => {:walkable => true},
+    :Tree       => {:walkable => false},
+    :Water      => {:walkable => false}
   }
 
   attr_reader :type, :app_type
@@ -40,5 +44,20 @@ class Tile < Container
   #
   def hidden?
     return @app_type!=nil
+  end
+
+  ##
+  # Returns true if both tiles are of the same type
+  #
+  def ===(t)
+    return self.type==t.type
+  end
+
+  def to_s
+    if @app_type
+      return @app_type.to_s
+    else
+      return @type.to_s
+    end
   end
 end

@@ -49,8 +49,8 @@ class Matriz
   def ins_values(x,y,vals, trans=nil)
     for j in 0..vals.h-1 do
       for i in 0..vals.w-1 do
-        if x+i>0 && x+i<@w && y+j>0 && y+j<@h && !vals[i,j]===trans
-          self[i+x,j+y]=vals[i,j]
+        if x+i>0 && x+i<@w && y+j>0 && y+j<@h# && !vals[i,j]===trans
+          self[i+x,j+y]=vals[i,j].dup
         end
       end
     end
@@ -81,6 +81,25 @@ class Matriz
       for j in y..y+h do
         if i>0 && j>0 && i<@w-1 && j<@h-1
           ret= ret && (self[i,j]==@bg)
+        else
+          ret=false
+        end
+      end
+    end
+    return ret
+  end
+
+  ##
+  # Does a value by value comparison, similar to a bitwisea or
+  # where bg would be 0 and anything else 1. Returns true if
+  # result is 
+  #
+  def fits(x, y, m, bg)
+    ret = true
+    m.h.times do |j|
+      m.w.times do |i|
+        if( x+i>0 && x+i<self.w-1 && y+j>0 && y+j<self.h-1 )
+          ret &= ( (m[i,j] === bg) || (self[i+x,j+y] === bg) )
         else
           ret=false
         end
