@@ -8,6 +8,6 @@
 =end
 
 class AI
-  def AI.update_none(char)
+  def AI.update_none(char, map)
   end
 end

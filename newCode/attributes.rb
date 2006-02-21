@@ -13,7 +13,9 @@ module Attributes
     :max_health => 100,
     :health => 100,
     :strength => 4,
-    :agility => 2
+    :agility => 2,
+    :max_age => 100,
+    :age => 1
   }
 
   ##
@@ -67,5 +69,20 @@ module Attributes
     else
       @attributes[:health] += h
     end
+  end
+
+  ##
+  # Adds an age unit to the creature. When it's too young or old, it
+  # should not be a very good fighter. During it's post-puberty, it
+  # may try to reproduce. If it grows too old, it will die.
+  # Returns false if it dies, true otherwise
+  #
+  def take_age
+    @attributes[:age] += 1
+    if @attributes[:age] > @attributes[:max_age]
+      return false
+    end
+
+    return true
   end
 end

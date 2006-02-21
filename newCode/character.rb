@@ -49,7 +49,11 @@ class Character
     end
   end
 
-  def update
-    AI.send(@ai, self)
+  def update(map)
+    if(!self.take_age)
+      # die
+      self = nil
+    end
+    AI.send(@ai, self, map)
   end
 end

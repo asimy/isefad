@@ -135,9 +135,16 @@ class MapGenerator
     alt = rand
     alts.w.times do |i|
       alts.h.times do |j|
+        alt =  alts[i-1, j] if alts [i-1, j]
+        if map[i, j-1]
+          alt += alts[i, j-1]
+          alt /= 2 if alts [i-1, j]
+        end
+        alt -= rand / 5- 0.10
+        alt = 1 - (rand / 10) if alt > 1
+        alt = rand / 10 if alt < 0
         alts[i,j] = alt
-        map[i,j] = :Hill if alt>0.5
-        alt = rand #/10-0.05
+        map[i,j] = :Hill if alt>0.7
       end
     end
     
@@ -152,21 +159,35 @@ class MapGenerator
       # Select a starting point
       x, y = rand(w), rand(h)
       finished = false
-      #while !finished do
-      100.times do
+      while !finished do
         map[x,y] = :Water
         x2, y2 = MapGenerator.min_height(x, y, alts)
         if alts[x,y] > alts[x2,y2]
           x = x2
           y = y2
         else
-          alts[x,y] +=0.1
-          map[x-1, y] = :Water if alts[x-1,y]
-          map[x, y-1] = :Water if alts[x,y-1]
-          map[x+1, y] = :Water if alts[x+1,y]
-          map[x, y+1] = :Water if alts[x,y+1]
+          alts[x,y] +=0.5
+          if alts[x-1,y]
+            map[x-1, y] = :Water 
+            alts[x-1,y] += 0.3
+          end
+          if alts[x,y-1]
+            map[x, y-1] = :Water
+            alts[x,y-1] += 0.3
+          end
+          if alts[x+1,y]
+            map[x+1, y] = :Water
+            alts[x+1,y] += 0.3
+          end
+          if alts[x,y+1]
+            map[x, y+1] = :Water
+            alts[x,y+1] += 0.3
+          end
           x = x2
           y = y2
+        end
+        if x == 0 || x == w || y == 0 || y == h
+          finished = true
         end
       end
     end
