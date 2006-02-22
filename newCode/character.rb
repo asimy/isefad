@@ -21,11 +21,11 @@ class Character
   attr_reader :ai, :x, :y, :speed
   attr_writer :ai
 
-  def initialize(x, y, speed, ai, attributes)
+  def initialize(game, x, y, speed, attributes)
+    @game = game
     @x = x
     @y = y
     @speed = speed
-    @ai = ("update_"+ai.to_lower).intern
     self.attributes = attributes
   end
 
@@ -41,19 +41,20 @@ class Character
   # Move in given direction, at char current speed
   #
   def move_dir(dir)
+    p_x = @x
+    p_y = @y
     case dir
-      when :up then @y -= @speed
-      when :left then @x -= @speed
-      when :down then @y += @speed
-      when :right then @x += @speed
+      when :up then p_y -= @speed
+      when :left then p_x -= @speed
+      when :down then p_y += @speed
+      when :right then p_x += @speed
     end
-  end
 
-  def update(map)
-    if(!self.take_age)
-      # die
-      #self = nil
+    test = @game.check_move(p_x, p_y)
+    
+    if test
+      @x = p_x
+      @y = p_y
     end
-    AI.send(@ai, self, map)
   end
 end

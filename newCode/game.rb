@@ -1,6 +1,6 @@
 require 'map_generator'
 require 'creature'
-#require 'player'
+require 'player'
 
 =begin
   * Name: Game
@@ -17,7 +17,7 @@ class Game
 
   def initialize
     @map = MapGenerator.create_field(80, 40, 100, true)
-    #@player = Player.new
+    @player = Player.new(self, 10, 10, 1, '')
   end
 
   ##
@@ -34,4 +34,13 @@ class Game
     self.update
   end
   
+  ##
+  # Check for an allowed move
+  #
+  def check_move(x, y)
+    ret = @map[x,y] && @map[x,y].walkable?
+
+    return ret
+  end
+
 end

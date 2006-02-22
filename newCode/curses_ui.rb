@@ -52,9 +52,7 @@ class CursesUI
     # Draws the windows
     draw_windows
    
-    #draw_map(30,20)
     game_loop
-    sleep 4
   end
 
   ##
@@ -111,22 +109,43 @@ class CursesUI
   end
 
   ##
+  # Draws the player
+  #
+  def draw_player(win, i, j)
+    win.setpos(j, i)
+    win.attron(A_BOLD) 
+    win.color_set(COLOR_YELLOW)
+    win.addstr("@")
+    win.refresh
+  end
+  
+  ##
   # Does the game loop (including key reading and dispatching)
   #
   def game_loop
+    # Loop controller
     playing = true
-    x=20
-    y=20
+    
+    # Draw the screen first time
+    x = @game.player.x
+    y = @game.player.y
+    draw_map(x,y)
+    draw_player(@map_win, 30, 10)
+    
+    # Real game loop
     while playing do
       case @scr.getch
-        when KEY_UP then y -= 1
-        when KEY_LEFT then x -= 1
-        when KEY_DOWN then y += 1
-        when KEY_RIGHT then x += 1
-        when KEY_ESC, 'q'[0] then playing = false
+        when KEY_UP then @game.player.move_dir(:up)
+        when KEY_LEFT then @game.player.move_dir(:left)
+        when KEY_DOWN then @game.player.move_dir(:down)
+        when KEY_RIGHT then @game.player.move_dir(:right)
+        when KEY_F2, 'q'[0] then playing = false
       end
+      x = @game.player.x
+      y = @game.player.y
+      draw_map(x, y)
 
-      draw_map(x,y)
+      draw_player(@map_win, 30, 10)
     end
   end
 end
