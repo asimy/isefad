@@ -9,6 +9,6 @@ require 'character'
   * License: GPL-2
 =end
 
-class Creature << Character
+class Creature < Character
   
 end

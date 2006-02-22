@@ -1,6 +1,6 @@
-require 'map'
-require 'creatures'
-require 'player'
+require 'map_generator'
+require 'creature'
+#require 'player'
 
 =begin
   * Name: Game
@@ -16,8 +16,8 @@ class Game
   attr_accessor :player, :creatures, :map
 
   def initialize
-    @map = Map.create_field(80, 40, 100, true)
-    @player = Player.new
+    @map = MapGenerator.create_field(80, 40, 100, true)
+    #@player = Player.new
   end
 
   ##

@@ -52,7 +52,7 @@ class Character
   def update(map)
     if(!self.take_age)
       # die
-      self = nil
+      #self = nil
     end
     AI.send(@ai, self, map)
   end
