@@ -50,7 +50,7 @@ class Character
       when :right then p_x += @speed
     end
 
-    test = @game.check_move(p_x, p_y)
+    test = @game.empty?(p_x, p_y)
     
     if test
       @x = p_x

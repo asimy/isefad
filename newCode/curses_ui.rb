@@ -120,6 +120,36 @@ class CursesUI
   end
   
   ##
+  # Draws a creature
+  #
+  def draw_creature(win, a, b, creature)
+    # Changing referential
+    i = creature.x - a
+    j = creature.y - b
+    
+    if i>0 && i<60 && j>0 && j<20 then
+      win.setpos(j,i)
+      win.attron(A_BOLD)
+      win.color_set(COLOR_CYAN)
+      win.addstr("C")
+    end
+  end
+  
+  ##
+  # Draws all creatures
+  #
+  def draw_creatures(win, x, y)
+    # Referential coordinates:
+    a = x - 30
+    b = y - 10
+
+    @game.creatures.each do |c|
+      draw_creature(win, a, b, c)
+    end
+    win.refresh
+  end
+  
+  ##
   # Does the game loop (including key reading and dispatching)
   #
   def game_loop
@@ -131,6 +161,7 @@ class CursesUI
     y = @game.player.y
     draw_map(x,y)
     draw_player(@map_win, 30, 10)
+    draw_creatures(@map_win, x, y)
     
     # Real game loop
     while playing do
@@ -146,6 +177,8 @@ class CursesUI
       draw_map(x, y)
 
       draw_player(@map_win, 30, 10)
+
+      draw_creatures(@map_win, x, y)
     end
   end
 end

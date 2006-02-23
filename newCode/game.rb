@@ -1,4 +1,5 @@
 require 'map_generator'
+require 'creature_generator'
 require 'creature'
 require 'player'
 
@@ -18,6 +19,8 @@ class Game
   def initialize
     @map = MapGenerator.create_field(80, 40, 100, true)
     @player = Player.new(self, 10, 10, 1, '')
+    CreatureGenerator.read('infos/monsters.info')
+    @creatures = populate_map(@map, 10)
   end
 
   ##
@@ -35,12 +38,36 @@ class Game
   end
   
   ##
-  # Check for an allowed move
+  # Check for an allowed tile
   #
-  def check_move(x, y)
+  def empty?(x, y)
     ret = @map[x,y] && @map[x,y].walkable?
-
+    if @creatures
+      @creatures.each do |c|
+        ret &= !(c.x == x && c.y == y)
+      end
+    end
     return ret
   end
 
+  ##
+  # Populates a map with a set of n random creatures
+  # It returns an array of created creatures
+  #
+  def populate_map(map, n)
+    ret = Array.new
+
+    n.times do
+      x, y = rand(map.width), rand(map.height)
+      
+      while(not empty?(x,y)) 
+        x, y = [rand(map.width), rand(map.height)]
+      end
+      
+      creat = CreatureGenerator.create_random(self, x, y)
+      ret << creat
+    end
+    
+    return ret
+  end
 end

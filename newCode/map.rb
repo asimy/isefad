@@ -11,6 +11,7 @@ require 'tile'
 
 class Map
   
+  attr_reader :height, :width
   def initialize(width, height, filler)
     @height= height
     @width = width

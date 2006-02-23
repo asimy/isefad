@@ -14,7 +14,7 @@ require 'creature'
 
 class CreatureGenerator
 
-  #@@creature_types = Hash.new
+  @@creature_types = Hash.new
 
   ##
   # Reads the nodes, and returns a hash of hashes
@@ -41,11 +41,20 @@ class CreatureGenerator
   def CreatureGenerator.create(game, name, x, y, speed=1)
     data = @@creature_types[name]
 
-    puts data
-    atts = ''
+    atts = data
 
     c = Creature.new(game, x, y, speed, data['AI'], atts)
     
+    return c
+  end
+
+  ##
+  # Returns a randomly created creature
+  #
+  def CreatureGenerator.create_random(game, x, y, speed=1)
+    i = rand(@@creature_types.length)
+    name = @@creature_types.keys[i]
+    return CreatureGenerator.create(game, name, x, y, speed)
   end
 
 end
