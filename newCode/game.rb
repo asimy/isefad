@@ -18,9 +18,18 @@ class Game
 
   def initialize
     @map = MapGenerator.create_field(80, 40, 100, true)
-    @player = Player.new(self, 10, 10, 1, '')
+
+    # Choose some initial empty place for the player
+    begin
+      x, y = [rand(map.width), rand(map.height)]
+    end while(not empty?(x,y)) 
+    @player = Player.new(self, x, y, 1, {"NAME"=>"Urgg"})
     CreatureGenerator.read('infos/monsters.info')
     @creatures = populate_map(@map, 10)
+
+    @text_queue = Array.new
+    self.message("Welcome to Isefad")
+    
   end
 
   ##
@@ -42,15 +51,42 @@ class Game
   #
   def empty?(x, y)
     ret = @map[x,y] && @map[x,y].walkable?
+    ret &= !creature?(x,y)
+    return ret
+  end
+
+  ##
+  # Check for creatures in the cell.
+  # Returns nil if none, the creature if any
+  #
+  def creature?(x,y)
+    ret = nil
+    if @player
+      ret = @player if @player.x == x && @player.y == y
+    end
     if @creatures
       @creatures.each do |c|
-        ret &= !(c.x == x && c.y == y)
+        ret = c if (c.x == x && c.y == y)
       end
     end
     return ret
   end
 
   ##
+  # Stores a message in the queue, to be retrieved by the UI
+  #
+  def message(text)
+    @text_queue.push text
+  end
+
+  ##
+  # Pops a message from the queue to show up in the UI
+  #
+  def read_message
+    return @text_queue.shift
+  end
+
+  ##4
   # Populates a map with a set of n random creatures
   # It returns an array of created creatures
   #
@@ -58,16 +94,22 @@ class Game
     ret = Array.new
 
     n.times do
-      x, y = rand(map.width), rand(map.height)
-      
-      while(not empty?(x,y)) 
+      begin
         x, y = [rand(map.width), rand(map.height)]
-      end
+      end while(not empty?(x,y)) 
       
       creat = CreatureGenerator.create_random(self, x, y)
       ret << creat
     end
     
     return ret
+  end
+
+  ##
+  # Reomves a creature from the game
+  #
+  def kill(creat)
+    message(creat.name+" is dead")
+    @creatures.delete(creat)
   end
 end

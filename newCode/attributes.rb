@@ -9,39 +9,26 @@
 
 module Attributes
 
-  @attributes = {
-    :max_health => 100,
-    :health => 100,
-    :strength => 4,
-    :agility => 2,
-    :max_age => 100,
-    :age => 1
-  }
+  attr_reader :name,
+              :max_health,
+              :health,
+              :strength,
+              :agility,
+              :max_age,
+              :age
 
   ##
   # Setter
   #
   def attributes= (atts)
-    @attributes = atts.dup
+    @name = atts["NAME"]
+    @max_health = atts["HP"]
+    @health = atts["HP"]
+    @streght = atts["ST"]
+    @agility = atts["AG"]
+    @max_age = atts["MA"]
+    @age = atts["AGE"]
   end
-
-  ##
-  # Getters
-  #
-  def health
-    return @attributes[:health]
-  end
-  def max_health
-    return @attributes[:max_health]
-  end
-  def strength
-    return @attributes[:strength]
-  end
-  def agility
-    return @attributes[:agility]
-  end
-  #
-  ##
 
   ##
   # Method that calculates an attack against us
@@ -49,9 +36,9 @@ module Attributes
   # Returns true if we die, false otherwise
   #
   def attacked(attacker)
-    attack = random(2+attacker[:strength])-random(self.agility)
+    attack = rand(2+attacker.strength)-rand(@agility)
     if attack>0
-      @attributes[:health] -= attack
+      @health -= attack
     end
     if self.health <= 0
       return true
@@ -64,10 +51,10 @@ module Attributes
   # Gets h more life points
   #
   def heal(h)
-    if self.health+h > self.max_health
-      @attributes[:health] = @attibutes[:max_health]
+    if @health+h > @max_health
+      @health = @max_health
     else
-      @attributes[:health] += h
+      @health += h
     end
   end
 
@@ -78,8 +65,8 @@ module Attributes
   # Returns false if it dies, true otherwise
   #
   def take_age
-    @attributes[:age] += 1
-    if @attributes[:age] > @attributes[:max_age]
+    @age += 1
+    if @age > @max_age
       return false
     end
 

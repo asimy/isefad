@@ -55,6 +55,11 @@ class Character
     if test
       @x = p_x
       @y = p_y
+    else
+      c = @game.creature?(p_x, p_y)
+      if c
+        @game.message("#{self.name} met #{c.name}")
+      end
     end
   end
 end

@@ -11,15 +11,18 @@ require 'character'
 
 class Creature < Character
 
+  attr_reader :pix
   def initialize(game, x, y, speed, ai, attributes)
     super(game, x, y, speed, attributes)
-    set_ai(ai)
+    self.ai = ai
+
+    @pix = attributes["PX"]
   end
 
   ##
   # Sets the ai to call each turn
   #
-  def set_ai(ai)
+  def ai=(ai)
     @ai = ("update_"+ai.downcase).intern
   end
 
@@ -29,7 +32,7 @@ class Creature < Character
   def update(map)
     if(!self.take_age)
       # die
-      #self = nil
+      @game.kill(self)
     end
     AI.send(@ai, self, map)
   end

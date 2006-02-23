@@ -10,5 +10,7 @@ require 'character'
 =end
 
 class Player < Character
-  
+  def initialize(game, x, y, speed, attributes)
+    super(game, x, y, speed, attributes)
+  end
 end
