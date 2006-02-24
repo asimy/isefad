@@ -55,6 +55,7 @@ class Character
     if test
       @x = p_x
       @y = p_y
+      @game.act(self, @x, @y) if self==@game.player
     else
       c = @game.creature?(p_x, p_y)
       if c

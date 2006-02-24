@@ -17,12 +17,14 @@ class Matriz
     @m = []
     @h.times do
       a=Array.new
-      begin
-        f=filler.dup
-      rescue
-        f=filler
+      @w.times do
+        begin
+          f=filler.dup
+        rescue
+          f=filler
+        end
+        a << f
       end
-      @w.times { a << f }
       @m << a
     end  
   end

@@ -106,11 +106,7 @@ class CursesUI
   #
   def draw_tile(win, tile)
     if tile
-      if tile.app_type
-        style = tile.app_type
-      else
-        style = tile.type
-      end
+      style = tile.type
       win.attron(A_BOLD) 
       win.color_set(@@tileset[style][:color])
       win.addstr(@@tileset[style][:char])

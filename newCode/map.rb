@@ -30,7 +30,7 @@ class Map
   end
 
   def []=(x, y, type)
-    @tiles[x,y]=Tile.new(type)
+    @tiles[x,y] = Tile.new(type)
   end
   
   def add_room(x, y, room)

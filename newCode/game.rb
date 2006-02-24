@@ -2,6 +2,8 @@ require 'map_generator'
 require 'creature_generator'
 require 'creature'
 require 'player'
+require 'tile_actions'
+require 'world_map'
 
 =begin
   * Name: Game
@@ -14,11 +16,14 @@ require 'player'
 
 class Game
 
+  include TileActions
+
   attr_accessor :player, :creatures, :map
 
   def initialize
-    @map = MapGenerator.create_field(80, 40, 100, true)
-
+    @world_map = WorldMap.new(10,10)
+    @world_map.current=[5,5]
+    @map = self.change_map
     # Choose some initial empty place for the player
     begin
       x, y = [rand(map.width), rand(map.height)]
@@ -73,6 +78,17 @@ class Game
   end
 
   ##
+  # Checks for actions on the tile,
+  # and executes them
+  #
+  def act(char, x, y)
+    if @map[x,y] && @map[x,y].action
+      message("Action: #{@map[x,y].action}")
+      self.send(@map[x,y].action, char)
+    end
+  end
+
+  ##
   # Stores a message in the queue, to be retrieved by the UI
   #
   def message(text)
@@ -86,7 +102,7 @@ class Game
     return @text_queue.shift
   end
 
-  ##4
+  ##
   # Populates a map with a set of n random creatures
   # It returns an array of created creatures
   #
@@ -106,7 +122,16 @@ class Game
   end
 
   ##
-  # Reomves a creature from the game
+  # Changes the current map
+  #
+  def change_map
+    map = MapGenerator.create_field(80, 40, 100, true)
+    MapGenerator.add_map_switchers!(map)
+    return map
+  end
+
+  ##
+  # Removes a creature from the game
   #
   def kill(creat)
     message(creat.name+" is dead")

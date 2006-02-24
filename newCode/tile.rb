@@ -25,11 +25,12 @@ class Tile < Container
     :Water      => {:walkable => false}
   }
 
-  attr_reader :type, :app_type
+  attr_reader :type, :action
+  attr_writer :type, :action
 
-  def initialize(type, apparent_type=nil)
+  def initialize(type, action=nil)
     @type = type
-    @app_type=apparent_type
+    @action = action
   end
 
   ##
@@ -40,11 +41,10 @@ class Tile < Container
   end
 
   ##
-  # Returns true if the tile is hidden (has different
-  # apparent and real types)
+  # Returns true if the tile has an action associated
   #
-  def hidden?
-    return @app_type!=nil
+  def action?
+    return @action!=nil
   end
 
   ##
@@ -55,10 +55,6 @@ class Tile < Container
   end
 
   def to_s
-    if @app_type
-      return @app_type.to_s
-    else
-      return @type.to_s
-    end
+    return @type.to_s
   end
 end

@@ -14,7 +14,7 @@ class MapGenerator
   ##
   # Class method that creates a random dungeon and returns it
   #
-  def MapGenerator.create_dungeon(w, h, max_rooms=w*h, seed=nil)
+  def MapGenerator.create_dungeon(w, h, seed=nil, max_rooms=w*h)
     map = Map.new(w,h,Tile.new(:Wall))
     srand(seed) if seed
 
@@ -126,7 +126,9 @@ class MapGenerator
   # Fields generator, simply scattering random trees
   # Later on, it will be able to add paths
   # 
-  def MapGenerator.create_field(w, h, nb_trees=100, river=false)
+  def MapGenerator.create_field(w, h, seed=nil, nb_trees=100, river=false)
+    srand(seed) if seed
+
     map = Map.new(w, h, Tile.new(:Grass))
 
     # Let's create an altitude chart
@@ -203,6 +205,23 @@ class MapGenerator
     pos << [x, y+1, alts[x,y+1]] if alts[x,y+1]
     sel=pos.min { |a, b| a[2]<=>b[2] }
     return sel[0], sel[1]
+  end
+
+  ##
+  # Set all the borders to 'map switcher'
+  #
+  def MapGenerator.add_map_switchers!(map)
+    map.width.times do |i|
+      map[i, 0].action = :go_up
+      map[i, map.height-1].action = :go_down
+    end
+  
+    map.height.times do |j|
+      map[0, j].action = :go_left
+      map[map.width-1, j].action = :go_right
+    end
+    
+    return map 
   end
 
 end
