@@ -4,6 +4,7 @@ require 'creature'
 require 'player'
 require 'tile_actions'
 require 'world_map'
+require 'creature_repartition'
 
 =begin
   * Name: Game
@@ -18,22 +19,25 @@ class Game
 
   include TileActions
 
-  attr_accessor :player, :creatures, :map
+  attr_accessor :player, :creatures, :map, :world_map
 
   def initialize
     @world_map = WorldMap.new(10,10)
-    @world_map.current=[5,5]
-    @map = self.change_map
+
+    CreatureGenerator.read('infos/monsters.info')
+
+    change_map(5,5)
+
     # Choose some initial empty place for the player
     begin
       x, y = [rand(map.width), rand(map.height)]
     end while(not empty?(x,y)) 
     @player = Player.new(self, x, y, 1, {"NAME"=>"Urgg"})
-    CreatureGenerator.read('infos/monsters.info')
-    @creatures = populate_map(@map, 10)
 
     @text_queue = Array.new
     self.message("Welcome to Isefad")
+
+    @time = 0
     
   end
 
@@ -49,17 +53,18 @@ class Game
   #
   def iterate
     self.update
+    @time += 1
   end
   
   ##
-  # Check for an allowed tile
+  # Check for an allowed tile in 'map'
   #
-  def empty?(x, y)
-    ret = @map[x,y] && @map[x,y].walkable?
+  def empty?(x, y, map=@map)
+    ret = map[x,y] && map[x,y].walkable?
     ret &= !creature?(x,y)
     return ret
   end
-
+  
   ##
   # Check for creatures in the cell.
   # Returns nil if none, the creature if any
@@ -112,7 +117,7 @@ class Game
     n.times do
       begin
         x, y = [rand(map.width), rand(map.height)]
-      end while(not empty?(x,y)) 
+      end while(not empty?(x,y,map)) 
       
       creat = CreatureGenerator.create_random(self, x, y)
       ret << creat
@@ -124,10 +129,26 @@ class Game
   ##
   # Changes the current map
   #
-  def change_map
-    map = MapGenerator.create_field(80, 40, 100, true)
-    MapGenerator.add_map_switchers!(map)
-    return map
+  def change_map(i, j)
+    #map = MapGenerator.create_field(80, 40, nil, 100, true)
+    #MapGenerator.add_map_switchers!(map)
+    #return map
+    
+    @world_map.current = [i,j]
+    @map = @world_map.current
+    if !@world_map.creatures
+      rep = CreatureRepartition.create_random(
+          @time,
+          CreatureGenerator.names,
+          20
+        )
+      @world_map.creatures = rep
+    else
+      @world_map.creatures.evolve!(@time)
+    end
+    
+    @creatures = @world_map.creatures.populate(self, @map)
+
   end
 
   ##

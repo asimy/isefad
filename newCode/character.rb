@@ -1,5 +1,6 @@
 require 'attributes'
 require 'ai'
+require 'container'
 
 # Let's load all 'ai_<something>' files in directory to enable exansion sets
 Dir['ai/ai_*.rb'].each {|ai| require ai}
@@ -14,7 +15,7 @@ Dir['ai/ai_*.rb'].each {|ai| require ai}
   * License: GPL-2
 =end
 
-class Character
+class Character < Container
   
   include Attributes
 

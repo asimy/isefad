@@ -18,40 +18,54 @@ class WorldMap
     w.times do |i|
       h.times do |j|
         @world[i,j] = {
-          :seed = rand,
-          :type = "field",
-          :w = 40 + rand(100),
-          :h = 10 + rand(100)
+          :seed => rand,
+          :type => "field",
+          :w => 40 + rand(100),
+          :h => 10 + rand(100),
+          :creatures => nil
         }
       end
     end
+    @height = h
+    @width = w
   end
 
-  def current=(x,y)
-    @x = x
-    @y = y
+  def creatures
+    return @world[@x,@y][:creatures]
+  end
+  
+  def creatures= (creats)
+    @world[@x,@y][:creatures] = creats
+  end
+
+  def current=(xy)
+    @x = xy[0]
+    @y = xy[1]
   end
   
   def current
-    creator = ("create_"+@world[x,y]).intern
+    creator = ("create_"+@world[@x,@y][:type]).intern
     
-    MapGenerator.send(creator,
-                      @world[x,y][:w],
-                      @world[x,y][:h],
-                      @world[x,y][:seed])
+    MapGenerator.add_map_switchers!(
+      MapGenerator.send(creator,
+                        @world[@x,@y][:w],
+                        @world[@x,@y][:h],
+                        @world[@x,@y][:seed])
+      )
+
   end
 
   def go_up
-    @y -= 1
+    @y -= 1 if @y>0
   end
   def go_left
-    @x -= 1
+    @x -= 1 if @x>0
   end
   def go_down
-    @y += 1
+    @y += 1 if @y<@world.h-1
   end
   def go_right
-    @x += 1
+    @x += 1 if @x<@world.w-1
   end
 end
  
