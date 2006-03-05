@@ -38,7 +38,7 @@ class CreatureGenerator
   ##
   # Return a given creature (called by type)
   #
-  def CreatureGenerator.create(game, name, x, y, gender=:M, age=-1, speed=1)
+  def CreatureGenerator.create(game, name, x, y, sex=:M, age=-1, speed=1)
     data = @@creature_types[name]
 
     atts = data
@@ -48,7 +48,7 @@ class CreatureGenerator
     if atts["PX"].respond_to? :intern
       atts["PX"] = atts["PX"].intern
     end
-    atts["GN"] = gender
+    atts["SEX"] = sex
 
     c = Creature.new(game, x, y, speed, data['AI'], atts)
     

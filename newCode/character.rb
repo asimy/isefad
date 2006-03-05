@@ -60,8 +60,15 @@ class Character < Container
     else
       c = @game.creature?(p_x, p_y)
       if c
-        @game.message("#{self.name} met #{c.name}")
+        self.interact(c)
       end
     end
+  end
+
+  ##
+  # What to do when the character meets another character.
+  #
+  def interact(c)
+    @game.message("#{self.name} met #{c.name}")
   end
 end

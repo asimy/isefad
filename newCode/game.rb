@@ -127,6 +127,19 @@ class Game
   end
 
   ##
+  # Adds a new creature to the game, on the current map
+  #
+  def add_creature(name, x, y, sex=nil)
+    case rand(2)
+      when 0 then sex = :M
+      when 1 then sex = :F
+    end
+    creat = CreatureGenerator.create(self, name, x, y, sex)
+
+    @creatures << creat
+  end
+
+  ##
   # Changes the current map
   #
   def change_map(i, j)

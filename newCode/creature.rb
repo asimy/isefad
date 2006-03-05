@@ -36,4 +36,22 @@ class Creature < Character
     end
     AI.send(@ai, self, map)
   end
+
+  ##
+  # Interact with another character
+  #
+  def interact(c)
+    if self.name == c.name && self.sex != c.sex
+      if self.fertile? && c.fertile?
+        if rand(4) > -1
+          #reproduce
+          @game.message "#{self.name} tries to have sex with #{c.name}"
+          @game.add_creature(self.name, self.x, self.y)
+          self.enter_infertility
+          c.enter_infertility
+        end
+      end
+    end
+    @game.message "#{self.sex} #{self.name} has met #{c.sex} #{c.name}"
+  end
 end

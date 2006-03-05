@@ -15,7 +15,10 @@ module Attributes
               :strength,
               :agility,
               :max_age,
-              :age
+              :age,
+              :sex,
+              :p_o_i, # period of infertility
+              :infertility
 
   ##
   # Setter
@@ -28,6 +31,9 @@ module Attributes
     @agility = atts["AG"]
     @max_age = atts["MA"]
     @age = atts["AGE"]
+    @sex = atts["SEX"]
+    @p_o_i = atts["PI"]
+    @infertility = 0
   end
 
   ##
@@ -66,10 +72,33 @@ module Attributes
   #
   def take_age
     @age += 1
+    @infertility -= 1 if @infertility > 0
+
     if @age > @max_age
       return false
     end
 
     return true
+  end
+
+  ##
+  # Checks whether the creature is in reproduction age and out
+  # of infertility periods
+  #
+  def fertile?
+    a = @age.to_f/@max_age.to_f
+    @game.message("#{@sex} is of age #{a}, infertility is #{@infertility}")
+    if a.between?(0.25, 0.75) && @infertility == 0
+      return true
+    else
+      return false
+    end
+  end
+
+  ##
+  # The creature shall enter an infertility period
+  #
+  def enter_infertility
+    @infertility = @p_o_i
   end
 end
