@@ -1,1 +1,0 @@
-ruby -e "require 'curses_ui'; CursesUI.new"
