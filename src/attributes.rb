@@ -18,7 +18,9 @@ module Attributes
               :age,
               :sex,
               :p_o_i, # period of infertility
-              :infertility
+              :infertility,
+              :carnivore,
+              :hunger
 
   ##
   # Setter
@@ -34,6 +36,8 @@ module Attributes
     @sex = atts["SEX"]
     @p_o_i = atts["PI"]
     @infertility = 0
+    @carnivore = (atts["IS"] == "carnivore")
+    @hunger = 0
   end
 
   ##
@@ -73,6 +77,7 @@ module Attributes
   def take_age
     @age += 1
     @infertility -= 1 if @infertility > 0
+    @hunger += 1
 
     if @age > @max_age
       return false
@@ -93,6 +98,26 @@ module Attributes
     else
       return false
     end
+  end
+
+  ##
+  # We consider the creature to be hungry when its hunger is superior
+  # to its max HP divided by two
+  #
+  def hungry?
+    return (@hunger > @max_health/2)
+  end
+
+  ##
+  # We eat whatever is here
+  #
+  def eat(food)
+    if food.veggie? && !@carnivore
+      @hunger -= 10
+    elsif food.meat? && @carnivore
+      @hunger -= 10
+    end
+    @hunger = 0 if @hunger < 0
   end
 
   ##

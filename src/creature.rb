@@ -35,6 +35,15 @@ class Creature < Character
       @game.kill(self)
     end
     AI.send(@ai, self, map)
+    
+    if self.hungry?
+      if self.carnivore
+        self.ai="hunt" 
+      else
+        self.ai="grass"
+      end
+    end
+    
   end
 
   ##

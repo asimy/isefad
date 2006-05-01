@@ -1,0 +1,23 @@
+NAME: Saber-teeth tiger
+DESC: Huge tiger with saber teeth, extremely dangerous.
+HP: 5
+XP: 100
+ST: 3
+AG: 10
+MA: 500
+AI: random
+PI: 50
+IS: carnivore
+PX: tiger
+---
+NAME: Frog
+DESC: Nice green frog, good to eat.
+HP: 8
+XP: 150
+ST: 5
+AG: 4
+MA: 400
+PI: 10
+AI: random
+IS: other
+PX: frog

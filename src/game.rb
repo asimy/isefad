@@ -24,7 +24,7 @@ class Game
   def initialize
     @world_map = WorldMap.new(10,10)
 
-    CreatureGenerator.read('infos/monsters.info')
+    CreatureGenerator.read('infos/creatures.info')
 
     change_map(5,5)
 
