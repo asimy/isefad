@@ -85,7 +85,7 @@ class MapGenerator
   ##
   # Cave generator, using neighbouring cells alogorithm
   #
-  def MapGenerator.create_cave(w, h, max_floors=nil, seed=nil)
+  def MapGenerator.create_cave(w, h, seed=nil, max_floors=nil)
     map = Map.new(w,h, Tile.new(:Wall))
     srand(seed) if seed
     
@@ -209,6 +209,7 @@ class MapGenerator
 
   ##
   # Set all the borders to 'map switcher'
+  # May also add some 'special places' (caves and such)
   #
   def MapGenerator.add_map_switchers!(map)
     map.width.times do |i|
@@ -220,7 +221,10 @@ class MapGenerator
       map[0, j].action = :go_left
       map[map.width-1, j].action = :go_right
     end
-    
+    rand(3).times do
+      map[rand(map.width), rand(map.height)].action = :go_in
+    end
+
     return map 
   end
 

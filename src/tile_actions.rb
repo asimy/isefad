@@ -65,4 +65,10 @@ module TileActions
     
     now_go(char, map, x, y)
   end
+
+  def go_in(char)
+  end
+
+  def go_out(char)
+  end
 end

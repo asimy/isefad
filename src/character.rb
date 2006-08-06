@@ -19,8 +19,8 @@ class Character < Container
   
   include Attributes
 
-  attr_reader :ai, :x, :y, :speed
-  attr_writer :ai
+  attr_reader :ai, :x, :y, :speed, :target
+  attr_writer :ai, :target
 
   def initialize(game, x, y, speed, attributes)
     @game = game
@@ -69,6 +69,8 @@ class Character < Container
   # What to do when the character meets another character.
   #
   def interact(c)
-    @game.message("#{self.name} met #{c.name}")
+    @game.message("#{self.name}(#{self.strength}) met #{c.name}(#{c.health})")
+    kill = c.attacked(self)
+    @game.kill(c) if kill
   end
 end

@@ -1,15 +1,14 @@
 + The random map creator is done
-+ The map random populator is unstarted (creatures and objects altogether)
++ The map random populator is partially done (creatures but no items yet)
 + Monsters are partially done
-+ Collision checker is unstarted
++ Collision checker is partially done (collisions, but no vision yet)
 + Attack is unstarted
 + Inventory is unstarted
 
 
 1. collision checker
-It should go into the Character class.
 Two parts: 
- -check for vision (are you in my field of vision?) (done)
+ -check for vision (are you in my field of vision?) (undone)
  -check for collision (are you standing by me?) (done)
 
 2. Monsters

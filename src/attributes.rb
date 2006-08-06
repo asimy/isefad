@@ -29,7 +29,7 @@ module Attributes
     @name = atts["NAME"]
     @max_health = atts["HP"]
     @health = atts["HP"]
-    @streght = atts["ST"]
+    @strength = atts["ST"]
     @agility = atts["AG"]
     @max_age = atts["MA"]
     @age = atts["AGE"]
@@ -46,9 +46,9 @@ module Attributes
   # Returns true if we die, false otherwise
   #
   def attacked(attacker)
-    attack = rand(2+attacker.strength)-rand(@agility)
+    attack = rand(2+attacker.agility)-rand(@agility)
     if attack>0
-      @health -= attack
+      @health -= rand(attacker.strength)
     end
     if self.health <= 0
       return true

@@ -22,7 +22,7 @@ class Game
   attr_accessor :player, :creatures, :map, :world_map
 
   def initialize
-    @world_map = WorldMap.new(10,10)
+    @world_map = WorldMap.new(160,100)
 
     CreatureGenerator.read('infos/creatures.info')
 
@@ -32,7 +32,13 @@ class Game
     begin
       x, y = [rand(map.width), rand(map.height)]
     end while(not empty?(x,y)) 
-    @player = Player.new(self, x, y, 1, {"NAME"=>"Urgg"})
+
+    atts = {"NAME" => "Urgg",
+            "HP" => 20,
+            "ST" => 4,
+            "AG" => 3
+           }
+    @player = Player.new(self, x, y, 1, atts)
 
     @text_queue = Array.new
     self.message("Welcome to Isefad")
