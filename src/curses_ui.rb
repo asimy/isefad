@@ -25,6 +25,7 @@ class CursesUI
     :Hill       => {:char => ":", :color => COLOR_GREEN},
     :Tree       => {:char => "T", :color => COLOR_RED},
     :Water      => {:char => "~", :color => COLOR_BLUE},
+    :Mountain   => {:char => "^", :color => COLOR_WHITE}
   }
 
   @@pixset = {

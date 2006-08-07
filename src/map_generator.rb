@@ -197,6 +197,98 @@ class MapGenerator
     return map
   end
 
+  ##
+  # It creates the worldmap, that is, the huge map that includes all others
+  # (muahahaha)
+  #
+  def MapGenerator.create_worldmap(w, h, seed=nil)
+    srand(seed) if seed
+
+    map = Map.new(w, h, Tile.new(:Grass))
+    # We're gonna use an altitude chart to set up the environment
+    alts = Matriz.new(w,h, 0.5)
+
+    # Let's surround the map with huge mountains
+    map.width.times do |i|
+      MapGenerator.change_height(i, 0, 0.6, alts)
+      MapGenerator.change_height(i, map.height-1, 0.6, alts)
+    end
+    map.height.times do |j|
+      MapGenerator.change_height(0, j, 0.6, alts)
+      MapGenerator.change_height(map.width-1, j, 0.6, alts)
+    end
+
+    # Now, let's modify randomly the map heights.. a couple of times ;)
+    rand(w*h/10).times do 
+      x = rand(w)
+      y = rand(h)
+      MapGenerator.change_height(x, y, rand-0.5, alts)
+    end
+
+    # Finally, let's send all these changes to the real map
+    w.times do |x|
+      h.times do |y|
+        case alts[x, y]
+        when 0..0.6 
+          map[x,y] = :Grass
+        when 0.6..1 
+          map[x,y] = :Hill
+        else
+          map[x,y] = :Mountain
+        end
+      end
+    end
+    
+    # Now, we add a river ('cause we have a river)
+    x, y = rand(w), rand(h)
+    finished = false
+    while !finished do
+      map[x,y] = :Water
+      x2, y2 = MapGenerator.min_height(x, y, alts)
+      if alts[x,y] > alts[x2,y2]
+        x = x2
+        y = y2
+      else
+        alts[x,y] += 1
+        if alts[x-1,y]
+          map[x-1, y] = :Water 
+          alts[x-1,y] += 0.9
+        end
+        if alts[x,y-1]
+          map[x, y-1] = :Water
+          alts[x,y-1] += 0.9
+        end
+        if alts[x+1,y]
+          map[x+1, y] = :Water
+          alts[x+1,y] += 0.9
+        end
+        if alts[x,y+1]
+          map[x, y+1] = :Water
+          alts[x,y+1] += 0.9
+        end
+        x = x2
+        y = y2
+      end
+      if x == 0 || x == w || y == 0 || y == h
+        finished = true
+      end
+    end
+    
+    return map
+  end
+
+  ##
+  # It modifies the height at one point of the altitude chart, and all around it
+  def MapGenerator.change_height(x, y, delta, alts)
+    alts[x, y] += delta if alts[x, y]
+    if delta > 0.1 then
+      MapGenerator.change_height(x-1, y, delta/2, alts) if alts[x-1, y]
+      MapGenerator.change_height(x+1, y, delta/2, alts) if alts[x+1, y]
+      MapGenerator.change_height(x, y-1, delta/2, alts) if alts[x, y-1]
+      MapGenerator.change_height(x, y+1, delta/2, alts) if alts[x, y+1]
+    end
+  end
+
   def MapGenerator.min_height(x, y, alts)
     pos = Array.new
     pos << [x-1, y, alts[x-1,y]] if alts[x-1,y]

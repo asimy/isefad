@@ -9,7 +9,7 @@ require 'map'
   * License: GPL-2
 =end
 
-class WorldMap
+class WorldMap < Map
   
   attr_reader :height, :width
   
@@ -19,7 +19,7 @@ class WorldMap
       h.times do |j|
         @world[i,j] = {
           :seed => rand,
-          :type => "field",
+          :type => "worldmap",
           :w => 40 + rand(100),
           :h => 10 + rand(100),
           :creatures => nil
