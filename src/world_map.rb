@@ -12,16 +12,17 @@ require 'map'
 class WorldMap < Map
   
   attr_reader :height, :width
+  attr_accessor :x, :y
   
   def initialize(w,h)
-    @world = Matriz.new(w, h, {})
+    @tiles = Matriz.new(w, h, {})
     w.times do |i|
       h.times do |j|
-        @world[i,j] = {
+        @tiles[i,j] = {
           :seed => rand,
-          :type => "worldmap",
-          :w => 40 + rand(100),
-          :h => 10 + rand(100),
+          :tile => Tile.new(:Grass),
+          :w => 80,
+          :h => 40,
           :creatures => nil
         }
       end
@@ -31,11 +32,11 @@ class WorldMap < Map
   end
 
   def creatures
-    return @world[@x,@y][:creatures]
+    return @tiles[@x,@y][:creatures]
   end
   
   def creatures= (creats)
-    @world[@x,@y][:creatures] = creats
+    @tiles[@x,@y][:creatures] = creats
   end
 
   def current=(xy)
@@ -44,15 +45,31 @@ class WorldMap < Map
   end
   
   def current
-    creator = ("create_"+@world[@x,@y][:type]).intern
+    #creator = ("create_"+@tiles[@x,@y][:type]).intern
+    case @tiles[@x, @y][:tile]
+    when :Grass, :Hill
+      creator = :create_field
+    when :Tree
+      creator = :create_forest
+    else
+      creator = :create_field
+    end
     
     MapGenerator.add_map_switchers!(
       MapGenerator.send(creator,
-                        @world[@x,@y][:w],
-                        @world[@x,@y][:h],
-                        @world[@x,@y][:seed])
+                        @tiles[@x,@y][:w],
+                        @tiles[@x,@y][:h],
+                        @tiles[@x,@y][:seed])
       )
 
+  end
+
+  def []=(x, y, what)
+    @tiles[x,y][:tile] = Tile.new(what) if @tiles[x,y]
+  end
+
+  def [](x,y)
+    @tiles[x,y][:tile] if @tiles[x,y]
   end
 
   def go_up
@@ -62,10 +79,10 @@ class WorldMap < Map
     @x -= 1 if @x>0
   end
   def go_down
-    @y += 1 if @y<@world.h-1
+    @y += 1 if @y<@tiles.h-1
   end
   def go_right
-    @x += 1 if @x<@world.w-1
+    @x += 1 if @x<@tiles.w-1
   end
 end
  

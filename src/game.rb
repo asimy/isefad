@@ -19,10 +19,26 @@ class Game
 
   include TileActions
 
-  attr_accessor :player, :creatures, :map, :world_map
+  ##
+  # player: contains the 'player' instance,
+  # creatures: contains an array of 'creature' instances
+  # map: contains the current map to show, a map instance
+  # world_map: contains the global map
+  # view: contains one of {:world_map, :current_map}
+  attr_accessor :player, :creatures, :map, :world_map, :view
 
   def initialize
-    @world_map = WorldMap.new(160,100)
+    
+    #Some random attributes for developping.
+    atts = {"NAME" => "Urgg",
+            "HP" => 20,
+            "ST" => 4,
+            "AG" => 3
+           }
+           
+    @world_map = MapGenerator.create_worldmap(100,80)
+
+    @view = :current_map
 
     CreatureGenerator.read('infos/creatures.info')
 
@@ -33,11 +49,6 @@ class Game
       x, y = [rand(map.width), rand(map.height)]
     end while(not empty?(x,y)) 
 
-    atts = {"NAME" => "Urgg",
-            "HP" => 20,
-            "ST" => 4,
-            "AG" => 3
-           }
     @player = Player.new(self, x, y, 1, atts)
 
     @text_queue = Array.new
@@ -146,12 +157,33 @@ class Game
   end
 
   ##
+  # Removes a creature from the game
+  #
+  def kill(creat)
+    message(creat.name+" is dead")
+    @creatures.delete(creat)
+  end
+
+  ##
+  # Changes the current view
+  #
+  def switch_view(what=nil)
+    if what == nil
+      case @view
+      when :world_map
+        @view = :current_map
+        @map = @world_map.current
+      when :current_map
+        @view = :world_map
+        @map = @world_map
+      end
+    end
+  end
+
+  ##
   # Changes the current map
   #
   def change_map(i, j)
-    #map = MapGenerator.create_field(80, 40, nil, 100, true)
-    #MapGenerator.add_map_switchers!(map)
-    #return map
     
     @world_map.current = [i,j]
     @map = @world_map.current
@@ -170,11 +202,4 @@ class Game
 
   end
 
-  ##
-  # Removes a creature from the game
-  #
-  def kill(creat)
-    message(creat.name+" is dead")
-    @creatures.delete(creat)
-  end
 end

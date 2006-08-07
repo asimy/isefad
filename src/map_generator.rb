@@ -204,7 +204,7 @@ class MapGenerator
   def MapGenerator.create_worldmap(w, h, seed=nil)
     srand(seed) if seed
 
-    map = Map.new(w, h, Tile.new(:Grass))
+    map = WorldMap.new(w, h)
     # We're gonna use an altitude chart to set up the environment
     alts = Matriz.new(w,h, 0.5)
 

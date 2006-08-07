@@ -166,7 +166,7 @@ class CursesUI
   def draw_all(win, x, y)
     draw_map(win, x,y)
     draw_player(win, win.maxx/2, win.maxy/2)
-    draw_creatures(win, x, y)
+    draw_creatures(win, x, y) if @game.view == :current_map
     win.refresh
   end
 
@@ -200,11 +200,20 @@ class CursesUI
       
       # Work out the input
       case @scr.getch
-        when KEY_UP then @game.player.move_dir(:up)
-        when KEY_LEFT then @game.player.move_dir(:left)
-        when KEY_DOWN then @game.player.move_dir(:down)
-        when KEY_RIGHT then @game.player.move_dir(:right)
-        when KEY_F2, 'q'[0] then playing = false
+        when KEY_UP 
+          @game.player.move_dir(:up)
+        when KEY_LEFT 
+          @game.player.move_dir(:left)
+        when KEY_DOWN 
+          @game.player.move_dir(:down)
+        when KEY_RIGHT 
+          @game.player.move_dir(:right)
+        when '<'[0]
+          @game.player.go_in
+        when '>'[0]
+          @game.player.go_out
+        when KEY_F2, 'q'[0] 
+          playing = false
       end
 
       # Launches the game logics
