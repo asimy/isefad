@@ -42,7 +42,7 @@ class Game
 
     CreatureGenerator.read('infos/creatures.info')
 
-    change_map(5,5)
+    change_map(50,50)
 
     # Choose some initial empty place for the player
     begin
@@ -172,10 +172,13 @@ class Game
       case @view
       when :world_map
         @view = :current_map
+        @world_map.current = [@player.x, @player.y]
         @map = @world_map.current
       when :current_map
         @view = :world_map
         @map = @world_map
+        @player.move_to(@world_map.x, @world_map.y)
+        @creatures = []
       end
     end
   end
