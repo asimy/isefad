@@ -25,15 +25,24 @@ class CursesUI
     :Hill       => {:char => ":", :color => COLOR_GREEN},
     :Tree       => {:char => "T", :color => COLOR_RED},
     :Water      => {:char => "~", :color => COLOR_BLUE},
-    :Mountain   => {:char => "^", :color => COLOR_WHITE}
+    :Mountain   => {:char => "^", :color => COLOR_WHITE},
+    :Cave       => {:char => "*", :color => COLOR_WHITE}
   }
 
   @@pixset = {
     :tiger => 't',
-    :frog  => 'f'
+    :frog  => 'f',
+    :human => '@',
   }
 
-  def initialize
+  def initialize(debug=false)
+
+    # Need to log?
+    if debug
+      require "logger"
+      $log = Logger.new('logs/debug', 'daily')
+    end
+
     @scr = Curses.init_screen
     Curses.start_color
     Curses.raw
@@ -97,7 +106,11 @@ class CursesUI
     (0..59).each do |i|
       (0..19).each do |j|
         win.setpos(j,i)
-        draw_tile(win, map[a+i,b+j])
+        if @game.player.memory[a+i,b+j]
+          draw_tile(win, map[a+i,b+j])
+        else
+          draw_tile(win, nil)
+        end
       end
     end
   end
@@ -156,7 +169,9 @@ class CursesUI
     b = y - win.maxy/2
 
     @game.creatures.each do |c|
-      draw_creature(win, a, b, c)
+      if @game.player.memory[c.x, c.y]
+        draw_creature(win, a, b, c)
+      end
     end
   end
 

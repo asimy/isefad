@@ -56,8 +56,13 @@ class Matriz
   def ins_values(x,y,vals, trans=nil)
     for j in 0..vals.h-1 do
       for i in 0..vals.w-1 do
-        if x+i>0 && x+i<@w && y+j>0 && y+j<@h# && !vals[i,j]===trans
-          self[i+x,j+y]=vals[i,j].dup
+        if x+i>0 && x+i<@w && y+j>0 && y+j<@h && (trans==nil || !vals[i,j]===trans)
+          begin
+            self[i+x,j+y]=vals[i,j].dup 
+          rescue
+            self[i+x,j+y]=vals[i,j]
+          end
+            
         end
       end
     end

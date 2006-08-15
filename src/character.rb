@@ -51,11 +51,10 @@ class Character < Container
       when :right then p_x += @speed
     end
 
-    test = @game.empty?(p_x, p_y)
+    test = @game.empty?(p_x, p_y) || @game.view == :world_map
     
     if test
-      @x = p_x
-      @y = p_y
+      move_to(p_x, p_y)
       @game.act(self, @x, @y) if self==@game.player
     else
       c = @game.creature?(p_x, p_y)

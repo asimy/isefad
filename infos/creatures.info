@@ -1,3 +1,27 @@
+#NAME: Self-explanatory :P
+#DESC: Description
+#HP: Health points
+#XP: Experience you gain by killing it
+#ST: Strength
+#AG: Agility
+#MA: Max Age
+#AI: Initial AI
+#PI: Period of infertility
+#IS: carnivore/herbivore/omnivore
+#PX: Tilename
+#---
+NAME: Human
+DESC: A member of your species
+HP: 10
+XP: 110
+ST: 4
+AG: 6
+MA: 5000
+AI: random
+PI: 100
+IS: omnivore
+PX: human
+---
 NAME: Saber-teeth tiger
 DESC: Huge tiger with saber teeth, extremely dangerous.
 HP: 5

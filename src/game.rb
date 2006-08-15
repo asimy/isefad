@@ -49,7 +49,8 @@ class Game
       x, y = [rand(map.width), rand(map.height)]
     end while(not empty?(x,y)) 
 
-    @player = Player.new(self, x, y, 1, atts)
+    @player = Player.new(self, -1, -1, 1, atts)
+    @player.move_to(x,y)
 
     @text_queue = Array.new
     self.message("Welcome to Isefad")
@@ -168,12 +169,14 @@ class Game
   # Changes the current view
   #
   def switch_view(what=nil)
+    message("before: "+@view.to_s)
     if what == nil
       case @view
       when :world_map
         @view = :current_map
-        @world_map.current = [@player.x, @player.y]
-        @map = @world_map.current
+        change_map(@player.x, @player.y)
+
+        @player.move_to(@map.width/2,3)
       when :current_map
         @view = :world_map
         @map = @world_map
@@ -181,6 +184,7 @@ class Game
         @creatures = []
       end
     end
+    message("after: "+@view.to_s)
   end
 
   ##

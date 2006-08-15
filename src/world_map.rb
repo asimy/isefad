@@ -45,14 +45,19 @@ class WorldMap < Map
   end
   
   def current
-    #creator = ("create_"+@tiles[@x,@y][:type]).intern
-    case @tiles[@x, @y][:tile]
+    case @tiles[@x, @y][:tile].type
     when :Grass, :Hill
       creator = :create_field
+      $log.info "Entering field"
     when :Tree
       creator = :create_forest
+      $log.info "Entering forest"
+    when :Cave
+      creator = :create_cave
+      $log.info "Entering cave"
     else
       creator = :create_field
+      $log.info "Entering other"
     end
     
     MapGenerator.add_map_switchers!(
@@ -62,6 +67,10 @@ class WorldMap < Map
                         @tiles[@x,@y][:seed])
       )
 
+  end
+
+  def current_seed
+    return @tiles[@x, @y][:seed]
   end
 
   def []=(x, y, what)

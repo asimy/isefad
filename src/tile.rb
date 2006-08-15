@@ -25,7 +25,8 @@ class Tile < Container
     :Hill       => {:walkable => true,  :eatable => true},
     :Tree       => {:walkable => false, :eatable => false},
     :Water      => {:walkable => false, :eatable => false},
-    :Mountain   => {:walkable => false, :eatable => false}
+    :Mountain   => {:walkable => false, :eatable => false},
+    :Cave       => {:walkable => true, :eatable => false},
   }
 
   attr_reader :type, :action

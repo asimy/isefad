@@ -126,27 +126,25 @@ class MapGenerator
   # Fields generator, simply scattering random trees
   # Later on, it will be able to add paths
   # 
-  def MapGenerator.create_field(w, h, seed=nil, nb_trees=100, river=false)
+  def MapGenerator.create_field(w, h, seed=nil, nb_trees=50, river=false)
     srand(seed) if seed
 
     map = Map.new(w, h, Tile.new(:Grass))
 
     # Let's create an altitude chart
-    # FIXME
-    alts = Matriz.new(w, h, rand)
-    alt = rand
-    alts.w.times do |i|
-      alts.h.times do |j|
-        alt =  alts[i-1, j] if alts [i-1, j]
-        if map[i, j-1]
-          alt += alts[i, j-1]
-          alt /= 2 if alts [i-1, j]
+    alts = MapGenerator.create_altitude_chart(w, h)
+
+    # Finally, let's send all these changes to the real map
+    w.times do |x|
+      h.times do |y|
+        case alts[x, y]
+        when 0..0.6 
+          map[x,y] = :Grass
+        when 0.6..2
+          map[x,y] = :Hill
+        else
+          map[x,y] = :Mountain
         end
-        alt -= rand / 5- 0.10
-        alt = 1 - (rand / 10) if alt > 1
-        alt = rand / 10 if alt < 0
-        alts[i,j] = alt
-        map[i,j] = :Hill if alt>0.7
       end
     end
     
@@ -158,64 +156,33 @@ class MapGenerator
     
     # Now, if we have a river, let's add it
     if river
-      # Select a starting point
-      x, y = rand(w), rand(h)
-      finished = false
-      while !finished do
-        map[x,y] = :Water
-        x2, y2 = MapGenerator.min_height(x, y, alts)
-        if alts[x,y] > alts[x2,y2]
-          x = x2
-          y = y2
-        else
-          alts[x,y] +=0.5
-          if alts[x-1,y]
-            map[x-1, y] = :Water 
-            alts[x-1,y] += 0.3
-          end
-          if alts[x,y-1]
-            map[x, y-1] = :Water
-            alts[x,y-1] += 0.3
-          end
-          if alts[x+1,y]
-            map[x+1, y] = :Water
-            alts[x+1,y] += 0.3
-          end
-          if alts[x,y+1]
-            map[x, y+1] = :Water
-            alts[x,y+1] += 0.3
-          end
-          x = x2
-          y = y2
-        end
-        if x == 0 || x == w || y == 0 || y == h
-          finished = true
-        end
-      end
+      MapGenerator.add_river!(map, alts)
     end
 
     return map
   end
 
   ##
-  # It creates the worldmap, that is, the huge map that includes all others
-  # (muahahaha)
+  # To create a forest, we just create a field with a *lot* of trees
+  def MapGenerator.create_forest(w, h, seed=nil, river=false)
+    return MapGenerator.create_field(w, h, seed, w*h/5, river)
+  end
+  ##
+  # This method creates a random altitude chart and returns it
   #
-  def MapGenerator.create_worldmap(w, h, seed=nil)
-    srand(seed) if seed
-
-    map = WorldMap.new(w, h)
-    # We're gonna use an altitude chart to set up the environment
+  def MapGenerator.create_altitude_chart(w, h, mountains=false)
     alts = Matriz.new(w,h, 0.5)
 
-    # Let's surround the map with huge mountains
-    map.width.times do |i|
-      MapGenerator.change_height(i, 0, 0.6, alts)
-      MapGenerator.change_height(i, map.height-1, 0.6, alts)
-    end
-    map.height.times do |j|
-      MapGenerator.change_height(0, j, 0.6, alts)
-      MapGenerator.change_height(map.width-1, j, 0.6, alts)
+    # Let's surround the map with huge mountains is switch is on
+    if mountains then
+      w.times do |i|
+        MapGenerator.change_height(i, 0, 0.6, alts)
+        MapGenerator.change_height(i, h-1, 0.6, alts)
+      end
+      h.times do |j|
+        MapGenerator.change_height(0, j, 0.6, alts)
+        MapGenerator.change_height(w-1, j, 0.6, alts)
+      end
     end
 
     # Now, let's modify randomly the map heights.. a couple of times ;)
@@ -224,23 +191,15 @@ class MapGenerator
       y = rand(h)
       MapGenerator.change_height(x, y, rand-0.5, alts)
     end
-
-    # Finally, let's send all these changes to the real map
-    w.times do |x|
-      h.times do |y|
-        case alts[x, y]
-        when 0..0.6 
-          map[x,y] = :Grass
-        when 0.6..1 
-          map[x,y] = :Hill
-        else
-          map[x,y] = :Mountain
-        end
-      end
-    end
     
-    # Now, we add a river ('cause we have a river)
-    x, y = rand(w), rand(h)
+    return alts
+  end
+
+  ##
+  # This method adds a river to the map, using the altitude chart
+  #
+  def MapGenerator.add_river!(map, alts)
+    x, y = rand(map.width), rand(map.height)
     finished = false
     while !finished do
       map[x,y] = :Water
@@ -269,11 +228,51 @@ class MapGenerator
         x = x2
         y = y2
       end
-      if x == 0 || x == w || y == 0 || y == h
+      if x == 0 || x == map.width || y == 0 || y == map.height
         finished = true
       end
     end
+  end
+
+  ##
+  # It creates the worldmap, that is, the huge map that includes all others
+  # (muahahaha)
+  #
+  def MapGenerator.create_worldmap(w, h, seed=nil)
+    srand(seed) if seed
+
+    map = WorldMap.new(w, h)
+    # We're gonna use an altitude chart to set up the environment
+    alts = MapGenerator.create_altitude_chart(w, h, true)
+
+    # Finally, let's send all these changes to the real map
+    w.times do |x|
+      h.times do |y|
+        case alts[x, y]
+        when 0..0.6 
+          map[x,y] = :Grass
+        when 0.6..1 
+          map[x,y] = :Hill
+        else
+          if rand(20)==1
+            map[x,y] = :Cave
+          else 
+            map[x,y] = :Mountain
+          end
+        end
+      end
+    end
     
+    # Now, we add a river ('cause we have a river)
+    MapGenerator.add_river!(map, alts)
+
+    # Put on some random trees (forests)
+    (w*h/100).times do
+      x, y = rand(w), rand(h)
+      map[x,y] = :Tree
+    end
+ 
+   
     return map
   end
 
