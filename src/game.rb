@@ -5,6 +5,7 @@ require 'player'
 require 'tile_actions'
 require 'world_map'
 require 'creature_repartition'
+require 'directions'
 
 =begin
   * Name: Game
@@ -209,4 +210,21 @@ class Game
 
   end
 
+  ##
+  # Assuming there  and is this creature friendly ? 
+  def friendly?(dir)
+    px, py = @player.next_cell(dir)
+    return creature?(px,py)
+  end
+
+  def any_friendly?
+    return Directions::All.find do |dir|
+      friendly?(dir)
+    end
+  end
+  
+  def chat(dir)
+    message("You would be chatting with someone")    
+  end
+  
 end

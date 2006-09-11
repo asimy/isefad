@@ -1,5 +1,8 @@
 require 'game'
 require 'curses'
+require 'action'
+require 'game_actions'
+
 include Curses
 
 =begin
@@ -61,6 +64,10 @@ class CursesUI
     Curses.init_pair(COLOR_BLUE, COLOR_BLUE, COLOR_BLACK);
     Curses.init_pair(COLOR_YELLOW, COLOR_YELLOW, COLOR_BLACK);
 
+    
+    # Init the action map
+    init_actions
+    
     # Init game
     @game = Game.new
 
@@ -212,25 +219,9 @@ class CursesUI
         draw_message(@mess_win, m)
       end
       @mess_win.refresh
-      
-      # Work out the input
-      case @scr.getch
-        when KEY_UP 
-          @game.player.move_dir(:up)
-        when KEY_LEFT 
-          @game.player.move_dir(:left)
-        when KEY_DOWN 
-          @game.player.move_dir(:down)
-        when KEY_RIGHT 
-          @game.player.move_dir(:right)
-        when '<'[0]
-          @game.player.go_in
-        when '>'[0]
-          @game.player.go_out
-        when KEY_F2, 'q'[0] 
-          playing = false
-      end
 
+      playing = handle_input(@scr)
+    
       # Launches the game logics
       @game.iterate
 
@@ -239,4 +230,70 @@ class CursesUI
       draw_all(@map_win, x, y)
     end
   end
+
+ 
+  ##
+  # Initialize a map of key / actions
+  # For each key, the first actions whose test matches will be called.
+  def init_actions
+
+    # These are the keys whose only purpose is
+    # to terminate the game.
+    @@show_stoppers = [KEY_F2, 'q'[0]]
+    
+    # I don't know for you, but I don't like the idea that
+    # I have to use this [0] all the time.
+    # So I JUST GET RID OF IT.
+    # D.R.Y.
+    # btw, if I realize that most of the actions associated
+    # to keys always have this no-parameter constructor, 
+    # It might be better to use a map of key / class name, 
+    # and have the class be built for ourselves.
+    # End of the long comment.
+    keys = { 'c' => [UndirectedChatAction.new],
+      '<' => [GoInAction.new],
+      '>' => [GoOutAction.new]}
+
+    keys.each do |key, action|
+      @@actions[key[0]] = action
+    end
+    
+    # Special handling for arrow keys
+    dirs = {KEY_UP => :up, 
+      KEY_LEFT => :left, 
+      KEY_RIGHT => :right, 
+      KEY_DOWN => :down}
+      
+    dirs.each do |key, dir|
+      # Specify it here if arrow 
+      # keys need to be given another meaning
+      @@actions[key] = [ChatAction.new(dir), 
+                        MoveAction.new(dir)]
+    end
+      
+    
+  end  
+    
+  # Work out the input
+  def handle_input(scr)
+    keep_playing = true
+    
+    key = scr.getch
+    
+    if (@@show_stoppers.include?(key))
+      keep_playing = false
+    else
+      if (@@actions.has_key?(key))
+        attempts = @@actions[key]
+        # This will go through all the actions 
+        # until one is executed (if any)
+        attempts.find do |action| 
+          action.attempt(@game) 
+        end
+      end
+    end
+        
+    return keep_playing
+  end
+
 end

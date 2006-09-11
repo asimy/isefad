@@ -38,19 +38,29 @@ class Character < Container
     @y = y
   end
 
+  def other_cell(dir, radius)
+    p_x = @x
+    p_y = @y
+    case dir
+      when :up then p_y -= radius
+      when :left then p_x -= radius
+      when :down then p_y += radius
+      when :right then p_x += radius
+    end
+    return p_x, p_y
+  end
+  
+  def next_cell(dir)
+    return other_cell(dir, 1)
+  end
+  
   ##
   # Move in given direction, at char current speed
   #
   def move_dir(dir)
-    p_x = @x
-    p_y = @y
-    case dir
-      when :up then p_y -= @speed
-      when :left then p_x -= @speed
-      when :down then p_y += @speed
-      when :right then p_x += @speed
-    end
 
+    p_x, p_y = other_cell(dir, @speed)
+    
     test = @game.empty?(p_x, p_y) || @game.view == :world_map
     
     if test
