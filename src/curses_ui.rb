@@ -36,15 +36,12 @@ class CursesUI
     :tiger => 't',
     :frog  => 'f',
     :human => '@',
+    :objects => '%',
   }
 
-  def initialize(debug=false)
+  @@actions = Hash.new
 
-    # Need to log?
-    if debug
-      require "logger"
-      $log = Logger.new('logs/debug', 'daily')
-    end
+  def initialize(debug=false)
 
     @scr = Curses.init_screen
     Curses.start_color
@@ -129,8 +126,15 @@ class CursesUI
     if tile
       style = tile.type
       win.attron(A_BOLD) 
-      win.color_set(@@tileset[style][:color])
-      win.addstr(@@tileset[style][:char])
+      case tile.nb_items
+      when 0: 
+        win.color_set(@@tileset[style][:color])
+        win.addstr(@@tileset[style][:char])
+      #when 1: put single object pixset there
+      else
+        win.color_set()
+        win.addstr(@@pixset[:objects])
+      end
     else
       win.addstr(" ")
     end

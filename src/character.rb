@@ -28,6 +28,8 @@ class Character < Container
     @y = y
     @speed = speed
     self.attributes = attributes
+
+    super(20/@agility ,@strength*2, 4)
   end
 
   ##
@@ -78,7 +80,9 @@ class Character < Container
   # What to do when the character meets another character.
   #
   def interact(c)
-    @game.message("#{self.name}(#{self.strength}) met #{c.name}(#{c.health})")
+    if $log
+      $log.debug("#{self.name}(#{self.strength}) met #{c.name}(#{c.health})")
+    end
     kill = c.attacked(self)
     @game.kill(c) if kill
   end

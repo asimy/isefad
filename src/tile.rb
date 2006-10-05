@@ -39,6 +39,8 @@ class Tile < Container
     if self.eatable?
       self.define_food(:veggie, 10)
     end
+
+    super( 999, 999, 999 )
   end
 
   ##

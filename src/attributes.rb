@@ -92,7 +92,9 @@ module Attributes
   #
   def fertile?
     a = @age.to_f/@max_age.to_f
-    @game.message("#{@sex} is of age #{a}, infertility is #{@infertility}")
+    if $log 
+      $log.debug("#{@sex} is of age #{a}, infertility is #{@infertility}")
+    end
     if a.between?(0.25, 0.75) && @infertility == 0
       return true
     else

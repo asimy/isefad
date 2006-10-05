@@ -48,16 +48,17 @@ class WorldMap < Map
     case @tiles[@x, @y][:tile].type
     when :Grass, :Hill
       creator = :create_field
-      $log.info "Entering field"
+      $log.info "Entering field" if $log
     when :Tree
       creator = :create_forest
-      $log.info "Entering forest"
+      $log.info "Entering forest" if $log
     when :Cave
       creator = :create_cave
-      $log.info "Entering cave"
+      $log.info "Entering cave" if $log
     else
       creator = :create_field
-      $log.info "Entering other"
+      $log.info "Entering other" if $log
+
     end
     
     MapGenerator.add_map_switchers!(

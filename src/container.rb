@@ -17,6 +17,7 @@ class Container
     @weight = @intrinsec_weight
   end
 
+  protected
   ##
   # Adds the item to the container.
   # It raises an exception if the item is not containable or if the
@@ -48,12 +49,42 @@ class Container
     end
   end
 
+  public
   ##
   # Returns true if the item is in the container, false otherwise
   #
   def include? item
     return @contained.include?(item)
   end
+
+  ##
+  # Removes an item from itself and adds it to another container
+  #
+  def give(item, dest)
+    if dest.respond_to? :add then
+      begin
+        dest-add(item)
+        self.remove(item)
+        if $log
+          $log.debug "A "+item+" has changed hands."
+        end
+      rescue RuntimeError
+        if $log
+          $log.warn dest+" has reached it's storage limits."
+        end
+      end
+    end
+  end
+
+  ##
+  # Removes all items from itself and adds them to another container
+  #
+  def give_all(dest)
+    @contained.each do |item|
+      self.give(item, dest)
+    end
+  end
+
 
   ##
   # Returns the current global weight (intrinsec+containeds)

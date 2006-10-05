@@ -107,7 +107,7 @@ class Game
   #
   def act(char, x, y)
     if @map[x,y] && @map[x,y].action
-      message("Action: #{@map[x,y].action}")
+      $log.debug("Action: #{@map[x,y].action}") if $log
       self.send(@map[x,y].action, char)
     end
   end
@@ -152,7 +152,7 @@ class Game
     case rand(2)
       when 0 then sex = :M
       when 1 then sex = :F
-    end
+    end unless sex
     creat = CreatureGenerator.create(self, name, x, y, sex)
 
     @creatures << creat
@@ -162,7 +162,8 @@ class Game
   # Removes a creature from the game
   #
   def kill(creat)
-    message(creat.name+" is dead")
+    $log.debug(creat.name+" is dead") if $log
+    creat.give_all(@map[creat.x, creat.y])
     @creatures.delete(creat)
   end
 
@@ -170,7 +171,7 @@ class Game
   # Changes the current view
   #
   def switch_view(what=nil)
-    message("before: "+@view.to_s)
+    $log.debug("before: "+@view.to_s) if $log
     if what == nil
       case @view
       when :world_map
@@ -185,7 +186,7 @@ class Game
         @creatures = []
       end
     end
-    message("after: "+@view.to_s)
+    $log.debug("after: "+@view.to_s) if $log
   end
 
   ##
