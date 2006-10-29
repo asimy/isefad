@@ -29,7 +29,9 @@ class Game
   attr_accessor :player, :creatures, :map, :world_map, :view
 
   def initialize
-    
+  end
+  
+  def generate_random
     #Some random attributes for developping.
     atts = {"NAME" => "Urgg",
             "HP" => 20,

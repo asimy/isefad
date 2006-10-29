@@ -67,6 +67,7 @@ class CursesUI
     
     # Init game
     @game = Game.new
+    @game.generate_random
 
     # Draws the windows
     draw_windows
