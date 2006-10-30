@@ -8,6 +8,9 @@
 =end
 
 class Matriz
+
+  include Enumerable
+
   attr :w
   attr :h
   def initialize(width, height, filler)
@@ -133,4 +136,29 @@ class Matriz
     end
     return s
   end
+
+  ##
+  # Yields every tile in left to right, top 
+  # to bottom order, with indexes.
+  #
+  def each_with_x_y(&block)
+    @m.each_with_index do |line, y|
+      line.each_with_index do |c, x|
+        yield(x,y,c)
+      end
+    end
+  end
+
+  ##
+  # Yields every tile in left to right, top
+  # to bottom order.
+  #
+  def each(&block)
+    @m.each do |line|
+      line.each do |c|
+        yield(c)
+      end
+    end
+  end
+
 end

@@ -32,9 +32,13 @@ class GameReaderTest < Test::Unit::TestCase
     assert_not_nil(@reader)
     assert_false(@reader.game_read?, "no game should be read at startup")
     @reader.map_description= @desc
-    @reader.read_map
+    @reader.read_game
     assert_true(@reader.game_read?, "game should be read now")
     assert_not_nil(@reader.game, "generated game should not be null")    
+    assert_not_nil(@reader.game.map, "map should be created")
+    assert_equal(3, @reader.game.map.height, "size is incorrect")
+    assert_equal(3, @reader.game.map.width, "size is incorrect")
+    assert_equal(:Grass, @reader.game.map[0,0].type, "First tile should be grass")
   end
   
  

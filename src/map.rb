@@ -11,6 +11,8 @@ require 'tile'
 
 class Map
   
+  include Enumerable
+
   attr_reader :height, :width, :tiles
   def initialize(width, height, filler)
     @height= height
@@ -67,6 +69,15 @@ class Map
   def check_space(x,y,r,bg)
     return @tiles.fits(x,y,r,bg)
   end
+
+  ##
+  # Is a position inside this map ?
+  #
+  def inside?(x,y)
+    if (x < 0 or y < 0) then return false end
+    if (x > @width or y > @height) then return false end
+    return true      
+  end
   
   def to_s
     @height.times do |j|
@@ -85,4 +96,21 @@ class Map
       print "\n"
     end
   end
+
+  ##
+  # Yields every tile in left to right, top
+  # to bottom order, with indexes.
+  #
+  def each_with_x_y(&block)
+    @tiles.each_with_indexes(block)
+  end
+
+  ##
+  # Yields every tile in left to right, top
+  # to bottom order. (used for Enumerable purposes)
+  #
+  def each(&block)
+    @tiles.each(block)
+  end
+
 end
