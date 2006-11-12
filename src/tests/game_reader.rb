@@ -46,10 +46,6 @@ class GameReader
   pre("map has been described") {@map_description != nil}
   pre("map is valid"){is_map_description_valid?} 
   def read_game
-    # Je m'arrete volontairement
-    # sur un test qui marche pas
-    # Il faut tester le reste du code, en 
-    # fait, avant de se lancer la dedans ...
     @is_game_read = true
     @game = Game.new
     # The heigth of the map is the number of elements
@@ -80,7 +76,13 @@ class GameReader
   def read_tile(x,y,tile)
     case tile
     when '.'[0]
-      @game.map[x,y] = :Grass 
+      @game.map[x,y] = :Grass
+    when 'T'[0]
+      @game.map[x,y] = :Tree
+    when '@'[0]
+      @game.map[x,y] = :Grass
+      atts = {"NAME" => "Test","HP" => 20,"ST" => 4,"AG" => 3}         
+      @game.player = Player.new(@game, x, y, 1, atts)
     end     
   end 
 
@@ -99,7 +101,7 @@ class GameReader
   #
   pre("not null") {|c| c!=nil}
   def is_tile_description?(c)
-    return ['.', '@'].include?(c)
+    return ['.', '@', 'T'].include?(c)
   end
 
 end

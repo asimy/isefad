@@ -15,7 +15,7 @@ class GameReaderTest < Test::Unit::TestCase
   
   
   def setup
-    @desc = ["...", ".@.", "..."]
+    @desc = [".T.", ".@.", "..."]
     @reader = GameReader.new
   end
 
@@ -39,6 +39,12 @@ class GameReaderTest < Test::Unit::TestCase
     assert_equal(3, @reader.game.map.height, "size is incorrect")
     assert_equal(3, @reader.game.map.width, "size is incorrect")
     assert_equal(:Grass, @reader.game.map[0,0].type, "First tile should be grass")
+    assert_not_nil(@reader.game.player)
+    player = @reader.game.player
+    assert_equal(1, player.x)
+    assert_equal(1, player.y)
+    assert_equal(1, player.speed)
+    assert_equal(:Tree, @reader.game.map[1,0].type, "Second tile should be a tree")
   end
   
  
