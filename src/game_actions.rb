@@ -32,7 +32,7 @@ end
 
 class GoOutAction < Action
   ##
-  # Set up an action to go into a cavern
+  # Set up an action to go out of a cavern
   def initialize
     super(Truth, lambda{|game| game.player.go_out})
   end
@@ -47,6 +47,22 @@ class ChatAction < Action
           lambda{|game| game.chat(dir)})
   end
 
+end
+
+class AttackAction < Action
+  ##
+  # Attack your fellow character, smithe him, oh yeah
+  #
+  def initialize(dir)
+    super(lambda{|game| game.creature_in_dir?(dir) && !game.friendly?(dir)},
+          lambda{|game|
+              c = game.creature_in_dir?(dir)
+              if c then
+                kill = c.attacked(game.player)
+                game.kill(c) if kill
+              end
+          })
+  end
 end
 
 class UndirectedChatAction < Action

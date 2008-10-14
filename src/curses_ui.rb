@@ -273,6 +273,7 @@ class CursesUI
       # Specify it here if arrow 
       # keys need to be given another meaning
       @@actions[key] = [ChatAction.new(dir), 
+                        AttackAction.new(dir),
                         MoveAction.new(dir)]
     end
       

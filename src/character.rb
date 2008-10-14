@@ -77,6 +77,14 @@ class Character < Container
   end
 
   ##
+  # Is this character friendly to the player?
+  # PLACEHOLDER
+  #
+  def friendly?
+    return true
+  end
+
+  ##
   # What to do when the character meets another character.
   #
   def interact(c)

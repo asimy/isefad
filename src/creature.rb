@@ -47,6 +47,14 @@ class Creature < Character
   end
 
   ##
+  # Is this creature friendly to the player?
+  # PLACEHODER
+  #
+  def friendly?
+    return false
+  end
+
+  ##
   # Interact with another character
   #
   def interact(c)

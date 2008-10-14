@@ -49,6 +49,7 @@ module Attributes
     attack = rand(2+attacker.agility)-rand(@agility)
     if attack>0
       @health -= rand(attacker.strength)
+      @game.message(self.name + " suffers " + attack.to_s + " damage!")
     end
     if self.health <= 0
       return true

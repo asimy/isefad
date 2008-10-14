@@ -102,7 +102,18 @@ class Game
     end
     return ret
   end
-
+   ##
+  # Check for creatures in said dir from player.
+  # Returns nil if none, the creature if any
+  #
+  def creature_in_dir?(dir)
+    px, py = @player.next_cell(dir)
+    c = creature?(px,py)
+    if c then return c
+    else return false
+    end
+  end
+ 
   ##
   # Checks for actions on the tile,
   # and executes them
@@ -216,8 +227,12 @@ class Game
   ##
   # Assuming there  and is this creature friendly ? 
   def friendly?(dir)
-    px, py = @player.next_cell(dir)
-    return creature?(px,py)
+    c = creature_in_dir?(dir)
+    if c then
+      return c.friendly?
+    else
+      return false
+    end
   end
 
   def any_friendly?
@@ -227,7 +242,7 @@ class Game
   end
   
   def chat(dir)
-    message("You would be chatting with someone")    
+    message("You would be chatting with "+creature_in_dir?(dir).name)    
   end
   
 end
